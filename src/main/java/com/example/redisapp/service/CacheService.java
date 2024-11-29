@@ -13,30 +13,21 @@ public class CacheService {
     private RedisTemplate<String, Object> redisTemplate;
 
     /**
-     * 查询数据（防止雪崩、击穿）
+     * Retrieve data from Redis cache
      */
     public Object getCachedData(String key) {
-        Object value = redisTemplate.opsForValue().get(key);
-        if (value == null) {
-            synchronized (key.intern()) { // 防止击穿
-                value = redisTemplate.opsForValue().get(key);
-                if (value == null) {
-                    return null;
-                }
-            }
-        }
-        return value;
+        return redisTemplate.opsForValue().get(key);
     }
 
     /**
-     * 添加数据到缓存
+     * Add data to Redis cache
      */
     public void addDataToCache(String key, Object value) {
-        redisTemplate.opsForValue().set(key, value, Duration.ofSeconds(300 + (int) (Math.random() * 60)));
+        redisTemplate.opsForValue().set(key, value, Duration.ofSeconds(300 + (int) (Math.random() * 60))); // 防止雪崩
     }
 
     /**
-     * 删除缓存
+     * Delete data from Redis cache
      */
     public void deleteCache(String key) {
         redisTemplate.delete(key);
