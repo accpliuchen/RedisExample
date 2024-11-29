@@ -21,7 +21,7 @@ public class AddDataControllerTest {
     @Test
     public void testAddData() throws Exception {
         mockMvc.perform(get("/api/add/addData")
-                        .param("key", "888")
+                        .param("key", "989")
                         .param("value", "999"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Data added successfully"));

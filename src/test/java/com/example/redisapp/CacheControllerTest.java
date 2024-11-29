@@ -1,9 +1,12 @@
 package com.example.redisapp;
 
+import com.example.redisapp.service.SyncService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,8 +23,13 @@ public class CacheControllerTest {
 
     @Test
     public void testGetData() throws Exception {
-        mockMvc.perform(get("/api/cache/888"))
+        // Test valid key
+        mockMvc.perform(get("/api/cache/989"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("871"));
+                .andExpect(content().string("999"));
+
+        // Test missing key
+        mockMvc.perform(get("/api/cache/keyX"))
+                .andExpect(status().isNotFound());
     }
 }
