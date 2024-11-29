@@ -16,23 +16,20 @@ public class SyncService {
     private DatabaseService databaseService;
 
     /**
-     * 查询数据，优先从缓存中读取
+     * 获取数据
+     * Retrieve data with cache and database fallback
      */
     public Object getData(String key) {
         Object value = cacheService.getCachedData(key);
-        if (value == null) {
-            Optional<DataEntity> entity = databaseService.getDataFromDB(key);
-            if (entity.isPresent()) {
-                cacheService.addDataToCache(key, entity.get().getValue());
-                return entity.get().getValue();
-            }
-            return null;
+        if (value == null) { // 缓存未命中
+            return databaseService.getDataFromDB(key).orElse(null);
         }
         return value;
     }
 
     /**
-     * 添加数据到数据库并同步到缓存
+     * 添加数据
+     * Add data to both database and cache
      */
     public void addData(String key, String value) {
         databaseService.saveData(key, value);
@@ -40,7 +37,8 @@ public class SyncService {
     }
 
     /**
-     * 删除数据库和缓存中的数据
+     * 删除数据
+     * Delete data from both database and cache
      */
     public void deleteData(String key) {
         databaseService.deleteData(key);
