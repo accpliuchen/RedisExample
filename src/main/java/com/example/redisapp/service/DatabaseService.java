@@ -13,10 +13,16 @@ public class DatabaseService {
     @Autowired
     private DataRepository dataRepository;
 
+    /**
+     * Retrieve data from MySQL database
+     */
     public Optional<DataEntity> getDataFromDB(String key) {
         return dataRepository.findByKey(key);
     }
 
+    /**
+     * Save data to MySQL database
+     */
     public DataEntity saveData(String key, String value) {
         DataEntity entity = new DataEntity();
         entity.setKey(key);
@@ -24,6 +30,9 @@ public class DatabaseService {
         return dataRepository.save(entity);
     }
 
+    /**
+     * Delete data from MySQL database
+     */
     public void deleteData(String key) {
         dataRepository.findByKey(key).ifPresent(dataRepository::delete);
     }
