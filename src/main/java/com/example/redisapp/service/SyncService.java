@@ -16,19 +16,27 @@ public class SyncService {
     private DatabaseService databaseService;
 
     /**
-     * 获取数据
-     * Retrieve data with cache and database fallback
+     * Retrieve data from cache first, fallback to database if not found
+     *
+     * @param key  Key to retrieve
+     * @return Value retrieved
      */
     public Object getData(String key) {
-        Object value = cacheService.getCachedData(key);
-        if (value == null) { // 缓存未命中
-            return databaseService.getDataFromDB(key).orElse(null);
+        Object cachedValue = cacheService.getCachedData(key);
+        if (cachedValue != null) {
+            return cachedValue;
         }
-        return value;
+
+        Optional<DataEntity> entity = databaseService.getDataFromDB(key);
+        if (entity.isPresent()) {
+            cacheService.addDataToCache(key, entity.get().getValue());
+            return entity.get().getValue();
+        }
+
+        return null;
     }
 
     /**
-     * 添加数据
      * Add data to both database and cache
      */
     public void addData(String key, String value) {
