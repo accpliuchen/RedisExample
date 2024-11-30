@@ -31,7 +31,7 @@ public class CacheService {
     }
 
     /**
-     * Add data to Redis cache
+     * Add data to cache with random expiration time.
      *
      * @param key   Key to add
      * @param value Value to add
@@ -42,6 +42,18 @@ public class CacheService {
         // By adding a random expiration offset, it reduces the likelihood of multiple keys expiring at the same time,
         // which could lead to a sudden spike in database requests (cache avalanche).
         redisTemplate.opsForValue().set(key, value, Duration.ofSeconds(300 + (int) (Math.random() * 60)));
+    }
+
+    /**
+     * Get data from cache and prevent penetration
+     * by storing null values temporarily.
+     */
+    public Object getDataFromCache(String key) {
+        Object value = redisTemplate.opsForValue().get(key);
+        if ("null".equals(value)) {
+            return null;
+        }
+        return value;
     }
 
     /**
