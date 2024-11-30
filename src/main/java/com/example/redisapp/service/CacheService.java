@@ -15,6 +15,11 @@ public class CacheService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+
+    public CacheService(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
     /**
      * Retrieve data from Redis cache
      *
@@ -32,7 +37,11 @@ public class CacheService {
      * @param value Value to add
      */
     public void addDataToCache(String key, Object value) {
-        redisTemplate.opsForValue().set(key, value, Duration.ofSeconds(300 + (int) (Math.random() * 60))); // 随机过期时间，防止雪崩
+        // Set a random expiration time for the cache to prevent cache avalanche.
+        // The expiration time is set to 300 seconds plus a random value between 0 and 60 seconds.
+        // By adding a random expiration offset, it reduces the likelihood of multiple keys expiring at the same time,
+        // which could lead to a sudden spike in database requests (cache avalanche).
+        redisTemplate.opsForValue().set(key, value, Duration.ofSeconds(300 + (int) (Math.random() * 60)));
     }
 
     /**
