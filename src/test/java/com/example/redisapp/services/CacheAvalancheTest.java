@@ -22,7 +22,7 @@ class CacheAvalancheTest {
         String key3 = "key3";
 
         // Simulate cache miss for all keys
-        when(syncService.getData(key1)).thenReturn(null).thenReturn("value1");
+        when(syncService.getData("hotKey" )).thenReturn("hotValue").thenReturn("hotValue");
         when(syncService.getData(key2)).thenReturn(null).thenReturn("value2");
         when(syncService.getData(key3)).thenReturn(null).thenReturn("value3");
 

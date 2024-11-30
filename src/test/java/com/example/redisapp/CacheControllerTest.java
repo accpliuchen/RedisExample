@@ -24,9 +24,9 @@ public class CacheControllerTest {
     @Test
     public void testGetData() throws Exception {
         // Test valid key
-        mockMvc.perform(get("/api/cache/989"))
+        mockMvc.perform(get("/api/cache/getDataCache/989"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Key is invalid"));
+                .andExpect(content().string("hotValue"));
 
 //        // Test missing key
 //        mockMvc.perform(get("/api/cache/keyX"))

@@ -35,23 +35,23 @@ public class CacheController {
 //        }
 //    }
 
-//    @GetMapping("/{key}")
-//    public ResponseEntity<Object> getData(@PathVariable String key) {
-//        // Step 1: Attempt to get data from cache
-//        Object cachedValue = cacheService.getDataFromCache(key);
-//        if (cachedValue != null) {
-//            return ResponseEntity.ok(cachedValue);
-//        }
-//
-//        // Step 2: Fetch from SyncService (with locking and caching)
-//        Object value = syncService.getData(key);
-//        if (value != null) {
-//            cacheService.addDataToCache(key, value); // 更新缓存
-//            return ResponseEntity.ok(value);
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data not found");
-//    }
+    @GetMapping("/getDataCache/{key}")
+    public ResponseEntity<Object> getDataCache(@PathVariable String key) {
+        // Step 1: Attempt to get data from cache
+        Object cachedValue = cacheService.getDataFromCache(key);
+        if (cachedValue != null) {
+            return ResponseEntity.ok(cachedValue);
+        }
+
+        // Step 2: Fetch from SyncService (with locking and caching)
+        Object value = syncService.getData(key);
+        if (value != null) {
+            cacheService.addDataToCache(key, value); // 更新缓存
+            return ResponseEntity.ok(value);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Data not found");
+    }
 
     /**
      * Retrieve data with cache fallback and handling for penetration, breakdown, and avalanche scenarios.
